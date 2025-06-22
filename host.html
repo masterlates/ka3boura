@@ -71,6 +71,10 @@
   <script>
     const socket = io('https://kaaboura-server.onrender.com');
 
+    socket.on('connect_error', (err) => {
+      alert('فشل الاتصال بالسيرفر: ' + err.message);
+    });
+
     function startGame() {
       const hostName = document.getElementById('hostName').value.trim();
       const category = document.getElementById('category').value;
@@ -87,9 +91,16 @@
 
     socket.on('game-created', ({ gameCode }) => {
       document.getElementById('gameCode').innerText = gameCode;
-      const link = `${location.origin}/join.html?code=${gameCode}`;
+
+      // عدل الرابط هذا حسب مكان استضافة ملفات join.html و game.html
+      const link = `https://masterlates.github.io/ka3boura/join.html?code=${gameCode}`;
+
       document.getElementById('gameLink').innerText = link;
-      new QRCode(document.getElementById('qr'), link);
+
+      const qrContainer = document.getElementById('qr');
+      qrContainer.innerHTML = ''; // نظّف العنصر قبل رسم QR جديد
+      new QRCode(qrContainer, link);
+
       document.getElementById('gameCodeSection').style.display = 'block';
     });
   </script>
